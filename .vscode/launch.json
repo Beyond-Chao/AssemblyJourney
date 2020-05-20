@@ -8,7 +8,7 @@
             "name": "AssemblyMain",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/AssemblyTutorial-C/main.o",
+            "program": "${workspaceFolder}/AssemblyTutorial-C/myProgram.o",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

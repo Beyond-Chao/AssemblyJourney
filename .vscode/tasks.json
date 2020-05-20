@@ -1,6 +1,4 @@
 {
-// 有关 tasks.json 格式的文档，请参见
-    // https://go.microsoft.com/fwlink/?LinkId=733558
     "version": "2.0.0",
     "tasks": [
         {
@@ -9,9 +7,9 @@
             "command": "/usr/bin/clang",
             "args": [
                 "-g",
-                "${workspaceFolder}/AssemblyTutorial-C/main.c",
+                "${workspaceFolder}/AssemblyTutorial-C/*.c",
                 "-o",
-                "${workspaceFolder}/AssemblyTutorial-C/main.o"
+                "${workspaceFolder}/AssemblyTutorial-C/myProgram.o"
             ],
             "options": {
                 "cwd": "/usr/bin"
@@ -20,24 +18,6 @@
                 "$gcc"
             ],
             "group": "build"
-        },
-        {
-            "type": "shell",
-            "label": "clang build active file",
-            "command": "/usr/bin/clang",
-            "args": [
-                "-g",
-                "${workspaceFolder}/AssemblyTutorial-C/operator.c",
-                "-o",
-                "${workspaceFolder}/AssemblyTutorial-C/operator.o"
-            ],
-            "options": {
-                "cwd": "/usr/bin"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build"
-        },
+        }
     ]
 }

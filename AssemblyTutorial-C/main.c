@@ -7,7 +7,7 @@
 //
 
 #include <stdio.h>
-// #include "operator.h"
+#include "operator.h"
 
 void addOperator() 
 {
@@ -17,12 +17,14 @@ void addOperator()
 
     printf("sum = %d", a);
 }
-
+ 
 int main(int argc, const char * argv[]) {
     // insert code here...
     printf("Hello, World!\n");
+    
     addOperator();
-    // greet();
+    greet();
+
     return 0;
 }
 
