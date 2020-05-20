@@ -7,16 +7,23 @@
 //
 
 #include <stdio.h>
-
-// int main(int argc, const char * argv[]) {
-//     // insert code here...
-//     printf("Hello, World!\n");
-//     return 0;
-// }
+// #include "operator.h"
 
 void addOperator() 
 {
     int a = 10;
     a = a + 1;
     a = a * 8;
+
+    printf("sum = %d", a);
 }
+
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    printf("Hello, World!\n");
+    addOperator();
+    // greet();
+    return 0;
+}
+
+
