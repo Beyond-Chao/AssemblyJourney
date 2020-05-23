@@ -2,6 +2,7 @@
 
 void hello() {
     printf("hello guys \n");
+    printf("good luck print");
 }
 
 void greet() {

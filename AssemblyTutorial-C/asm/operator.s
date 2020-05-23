@@ -5,15 +5,22 @@
 _hello:                                 ; @hello
 	.cfi_startproc
 ; %bb.0:
-	stp	x29, x30, [sp, #-16]!   ; 16-byte Folded Spill
-	mov	x29, sp
+	sub	sp, sp, #32             ; =32
+	stp	x29, x30, [sp, #16]     ; 16-byte Folded Spill
+	add	x29, sp, #16            ; =16
 	.cfi_def_cfa w29, 16
 	.cfi_offset w30, -8
 	.cfi_offset w29, -16
 	adrp	x0, l_.str@PAGE
 	add	x0, x0, l_.str@PAGEOFF
 	bl	_printf
-	ldp	x29, x30, [sp], #16     ; 16-byte Folded Reload
+	adrp	x8, l_.str.1@PAGE
+	add	x8, x8, l_.str.1@PAGEOFF
+	stur	w0, [x29, #-4]          ; 4-byte Folded Spill
+	mov	x0, x8
+	bl	_printf
+	ldp	x29, x30, [sp, #16]     ; 16-byte Folded Reload
+	add	sp, sp, #32             ; =32
 	ret
 	.cfi_endproc
                                         ; -- End function
@@ -28,8 +35,8 @@ _greet:                                 ; @greet
 	.cfi_def_cfa w29, 16
 	.cfi_offset w30, -8
 	.cfi_offset w29, -16
-	adrp	x0, l_.str.1@PAGE
-	add	x0, x0, l_.str.1@PAGEOFF
+	adrp	x0, l_.str.2@PAGE
+	add	x0, x0, l_.str.2@PAGEOFF
 	bl	_printf
 	stur	w0, [x29, #-4]          ; 4-byte Folded Spill
 	bl	_hello
@@ -43,6 +50,9 @@ l_.str:                                 ; @.str
 	.asciz	"hello guys \n"
 
 l_.str.1:                               ; @.str.1
+	.asciz	"good luck print"
+
+l_.str.2:                               ; @.str.2
 	.asciz	"Hi I`am BeyondChao \n"
 
 
