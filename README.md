@@ -15,23 +15,11 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 * -arch 指定架构平台
 * -isysroot 指定SDK 的目录（include 头文件所在库的位置），由 xcrun 生成的目录
 
---- 
-
-## Instruction
-常用指令介绍
-
-|  指令     | 说明    |
-|  --------   | --------  |
-| **PC**  |  指令寄存器(程序计数器)，保存的是下一条将要执行的指令的内存地址，而不是当前正在执行的指令的内存地址。|
-
-
-更多指令详解介绍，参照 arm64(armV8) [指令手册](https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf)，方便查阅。
-
 ---
 
 ## Register
 
-|  寄存器     | 说明    |
+|  寄存器   |   说明    |
 |  --------   | --------  |
 | **PC**  |  指令寄存器(程序计数器)，保存的是下一条将要执行的指令的内存地址，而不是当前正在执行的指令的内存地址。|
 | **LR**  | 寄存器则保存着最后一次函数调用指令的下一条指令的内存地址，为了做函数调用栈跟踪，我们的程序在崩溃时能够将函数调用栈打印出来就是借助了LR寄存器来实现的，在iOS 也就是 **X30 寄存器** |
@@ -42,12 +30,33 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 | **V0-V31** | 现在的CPU除了支持标量运算外，还支持向量运算。向量运算在图形处理相关的领域用得非常的多。为了支持向量计算系统了也提供了众多的**向量寄存器**|
 |**CPSR**| **状态寄存器**，1. 保存指令执行过程中的结果，比如相加的结果是否溢出、结果是否为0、以及是否是负数等。2. 一些指令的执行需要根据状态寄存器的值进行处理，比如一些条件跳转指令或者比较指令等|
 
+**注意：**
+> arm64体系的CPU中虽然定义X29,X30两个寄存器，但是你在 Xcode 上是看不到这两个寄存器的，但是你能到FP和LR寄存器，其实X29就是FP, X30就是LR。
+
+**Xcode** 查看真机上的寄存器如图：
+
+![](media/xcode_display_register.png)
 
 栈结构图：
 
 ![stack](media/stack_structure.png)
 
+
+
+--- 
+
+## Instructions
+常用指令介绍
+
+|  指令     | 使用示例    | 说明 |
+|  --------   | --------  | ------- | 
+| **stp**  |  sub sp, sp, #32 <br> stp x29, x30, [sp, #16] | stp: Store Pair of Registers 把一对寄存器中的内容保存起来，通常是保存到栈上或内存中，这里是把 FP LR 保存到sp 偏移16字节的位置上。这两句一般出现在函数的开头，用于开辟栈空间，保存现场，因为寄存器在CPU中只有一个，调用别的函数时也需要使用的，所以先把相关寄存器的内容保存到栈内存中，当执行完毕后，从栈中 **ldp** 加载之前保存的内容到寄存器中，恢复现场，**ret** 就是把 LR 内容赋值给 PC |
+
+
+更多指令详解介绍，参照 arm64(armV8) [指令手册](https://static.docs.arm.com/ddi0596/a/DDI_0596_ARM_a64_instruction_set_architecture.pdf)，方便查阅。
+
 ---
+
 
 ## Instruction encodings
 
