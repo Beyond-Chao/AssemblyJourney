@@ -58,11 +58,19 @@ _dataTypeSample:                        ; @dataTypeSample
 _integer:                               ; @integer
 	.cfi_startproc
 ; %bb.0:
-	sub	sp, sp, #16             ; =16
-	.cfi_def_cfa_offset 16
+	sub	sp, sp, #32             ; =32
+	stp	x29, x30, [sp, #16]     ; 16-byte Folded Spill
+	add	x29, sp, #16            ; =16
+	.cfi_def_cfa w29, 16
+	.cfi_offset w30, -8
+	.cfi_offset w29, -16
 	mov	w8, #999
-	str	w8, [sp, #12]
-	add	sp, sp, #16             ; =16
+	stur	w8, [x29, #-4]
+	adrp	x0, l_.str.1@PAGE
+	add	x0, x0, l_.str.1@PAGEOFF
+	bl	_printf
+	ldp	x29, x30, [sp, #16]     ; 16-byte Folded Reload
+	add	sp, sp, #32             ; =32
 	ret
 	.cfi_endproc
                                         ; -- End function
@@ -76,18 +84,60 @@ _greet:                                 ; @greet
 	.cfi_def_cfa w29, 16
 	.cfi_offset w30, -8
 	.cfi_offset w29, -16
-	adrp	x0, l_.str.1@PAGE
-	add	x0, x0, l_.str.1@PAGEOFF
+	adrp	x0, l_.str.2@PAGE
+	add	x0, x0, l_.str.2@PAGEOFF
 	bl	_printf
 	ldp	x29, x30, [sp], #16     ; 16-byte Folded Reload
 	ret
 	.cfi_endproc
                                         ; -- End function
+	.globl	_incrementLater         ; -- Begin function incrementLater
+	.p2align	2
+_incrementLater:                        ; @incrementLater
+	.cfi_startproc
+; %bb.0:
+	adrp	x8, _g_a@PAGE
+	add	x8, x8, _g_a@PAGEOFF
+	ldr	w9, [x8]
+	add	w10, w9, #1             ; =1
+	str	w10, [x8]
+	mov	x0, x9
+	ret
+	.cfi_endproc
+                                        ; -- End function
+	.globl	_incrementBefore        ; -- Begin function incrementBefore
+	.p2align	2
+_incrementBefore:                       ; @incrementBefore
+	.cfi_startproc
+; %bb.0:
+	adrp	x8, _g_b@PAGE
+	add	x8, x8, _g_b@PAGEOFF
+	ldr	w9, [x8]
+	add	w9, w9, #1              ; =1
+	str	w9, [x8]
+	mov	x0, x9
+	ret
+	.cfi_endproc
+                                        ; -- End function
+	.section	__DATA,__data
+	.globl	_g_a                    ; @g_a
+	.p2align	2
+_g_a:
+	.long	1                       ; 0x1
+
+	.globl	_g_b                    ; @g_b
+	.p2align	2
+_g_b:
+	.long	1                       ; 0x1
+
 	.section	__TEXT,__cstring,cstring_literals
 l_.str:                                 ; @.str
 	.asciz	"separator"
 
 l_.str.1:                               ; @.str.1
+	.asciz	"integer"
+
+l_.str.2:                               ; @.str.2
 	.asciz	"Hi I`am BeyondChao \n"
 
 

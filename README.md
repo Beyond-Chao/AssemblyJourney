@@ -23,7 +23,7 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 |  --------   | --------  |
 | **PC**  |  Program Counter 指令寄存器(程序计数器)，保存的是下一条将要执行的指令的内存地址，而不是当前正在执行的指令的内存地址。|
 | **LR**  |  Link Register 寄存器则保存着最后一次函数调用指令的下一条指令的内存地址，为了做函数调用栈跟踪，我们的程序在崩溃时能够将函数调用栈打印出来就是借助了LR寄存器来实现的，在iOS 也就是 **X30 寄存器** |
-| **SP** | Stack Pointer register **栈寄存器**，维护一个栈，需要两个寄存器，一个保存栈的基地址，也是**栈顶地址**，一个保存栈的偏移地址，即**栈底地址**，在 arm64 中**用 X29(FP) 寄存器保存栈的基地址，SP 寄存器 保存栈顶地址**，它是可以移动的，在现代几乎所有的机器中，**栈都是从高地址向低地址生长的**，所以我们看到函数的调用时候，通常第一句 都是 **sub sp, sp, #immediate，开辟栈空间，函数调用结束，add	sp, sp, #immediate，回复栈空间**，这也是为什么，栈内存能够自动回收的原因 |
+| **SP** | Stack Pointer register **栈寄存器**，维护一个栈，需要两个寄存器，一个保存栈的基地址，也是**栈顶地址**，一个保存栈的偏移地址，即**栈底地址**，在 arm64 中**用 X29(FP) 寄存器保存栈的基地址，SP 寄存器 保存栈顶地址**，它是可以移动的，在现代几乎所有的机器中，**栈都是从高地址向低地址生长的**，所以我们看到函数的调用时候，通常第一句 都是 **sub sp, sp, #immediate，开辟栈空间，函数调用结束，add sp, sp, #immediate，回复栈空间**，这也是为什么，栈内存能够自动回收的原因 |
 | **X0-X30** | **数据地址寄存器**通常用来做数据计算的临时存储、做累加、计数、地址保存等功能, 对应的32位是**W0-W30** |
 | **XZR** | 用来保存 0，它的 32 位是 **WZR**，一般定义一个变量，初始化为 0 时就会用到它 |
 | **D0-D31** | **浮点寄存器**，因为浮点数的存储以及其运算的特殊性，所以CPU中专门提供 **[FPU](https://en.wikipedia.org/wiki/Floating-point_unit)（Float Point Unit CPU 中的浮点运算单元）** 以及相应的浮点数寄存器来处理浮点数，对应的 32位是 **S0 - S31** |
@@ -38,11 +38,18 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 
 ![](media/xcode_display_register.png)
 
-栈结构图：
+## 关于栈的结构和操作
+
+1. 栈结构图：
 
 ![stack](media/stack_structure.png)
 
+2. 入栈
+![entry_stack_operate](media/entry_stack_operate.png)
 
+3. 出栈
+
+![pop_stack_operate](media/pop_stack_operate.png)
 
 --- 
 
@@ -51,7 +58,7 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 
 |  指令     | 使用示例    | 说明 |
 |  --------   | --------  | ------- | 
-| **stp**  |  sub sp, sp, #32 <br> stp x29, x30, [sp, #16] | stp: Store Pair of Registers 把一对寄存器中的内容保存起来。<br>通常是保存到栈上或内存中，这里是把 FP LR 保存到sp 偏移16字节的位置上。<br> 这两句一般出现在函数的开头（*prologue*），用于开辟栈空间，保存现场，因为寄存器在CPU中只有一个，调用别的函数时也需要使用的。<br> 所以先把相关寄存器的内容保存到栈内存中，当执行完毕后，从栈中 **ldp** 加载之前保存的内容到寄存器中，恢复现场（*epilogue*），**ret** 就是把 LR 内容赋值给 PC |
+| **stp**  |  sub sp, sp, #32 <br> stp x29, x30, [sp, #16] | stp: Store Pair of Registers 把一对寄存器中的内容保存起来。<br>通常是保存到栈上或内存中，这里是把 FP LR 保存到sp 偏移16字节的位置上。<br> 这两句一般出现在函数的开头（*prologue*），用于开辟栈空间，保存现场，因为寄存器在CPU中只有一个，调用别的函数时也需要使用的。<br> 所以这一句是保存函数调用前的栈顶寄存器的值和该函数返回后下一个将要执行的指令地址值 <br> 所以先把相关寄存器的内容保存到栈内存中，当执行完毕后，从栈中 **ldp** 加载之前保存的内容到寄存器中，恢复现场（*epilogue*），**ret** 就是把 LR 内容赋值给 PC |
 |**adrp**|  adrp x0, l_.str@PAGE  <br> add x0, x0, l_.str@PAGEOFF <br> bl	_printf | 获取某个标签所在页的地址，这里的label 是 l_.str <br>@PAGE 表示该标签所在的页 <br> @PAGEOFF 表示该标签地址对应页地址的偏移<br>这样 add 之后 就可以获取某个标签具体的地址了 <br>（保存着字符串常量），把计算结果存入**x0 寄存器**，<br> 然后调用 printf 打印出来，因为 x0 保存的是函数调用的第一个参数。|
 | | |
 
