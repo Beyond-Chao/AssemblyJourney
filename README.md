@@ -5,6 +5,16 @@ arm64 汇编菜鸟的私房菜。
 
 ---
 
+## About ARM （Acron RISC Machine | Advanced RISC Machines）
+
+> 更多关于 ARM 架构、公司 参见这篇科普 [ARM到底是一家什么样的公司](https://www.ithome.com/0/424/726.htm)
+
+> [ARM architecture](https://en.wikipedia.org/wiki/ARM_architecture#64/32-bit_architecture)
+
+> 关于苹果设计的一些芯片，架构，手机等信息，参见 [List of Apple processors](https://en.wikipedia.org/wiki/Apple-designed_processors#List_of_Apple_processors) 
+
+---
+
 ## Generate assembly code
 
 ```
