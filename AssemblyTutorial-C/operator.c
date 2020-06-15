@@ -16,7 +16,7 @@ void dataTypeSample() {
 
 void integer() {   
     int i = 999;
-    printf("integer");
+    printf("integer\n");
 }
 
 void greet() {

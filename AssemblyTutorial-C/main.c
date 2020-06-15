@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include "operator.h"
 #include "pointer.h"
+/*
+1. Build: 【Shift + CMD + P】 Task: Run Build Task
+2. Run:   Run
+*/
 
 void addOperator() 
 {
@@ -16,12 +20,12 @@ void addOperator()
     a = a + 1;
     a = a * 8;
 
-    printf("sum = %d", a);
+    printf("sum = %d\n", a);
 }
  
 int main(int argc, const char * argv[]) {
     // insert code here...
-    printf("Hello, World!\n");
+    printf("Hello, World!!!\n");
     
     addOperator();
     greet();
