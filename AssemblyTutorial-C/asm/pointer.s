@@ -49,6 +49,72 @@ LBB0_2:
 	brk	#0x1
 	.cfi_endproc
                                         ; -- End function
+	.globl	_char_array_prototype   ; -- Begin function char_array_prototype
+	.p2align	2
+_char_array_prototype:                  ; @char_array_prototype
+	.cfi_startproc
+; %bb.0:
+	sub	sp, sp, #48             ; =48
+	stp	x29, x30, [sp, #32]     ; 16-byte Folded Spill
+	add	x29, sp, #32            ; =32
+	.cfi_def_cfa w29, 16
+	.cfi_offset w30, -8
+	.cfi_offset w29, -16
+	adrp	x8, ___stack_chk_guard@GOTPAGE
+	ldr	x8, [x8, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x8, [x8]
+	adrp	x9, ___stack_chk_guard@GOTPAGE
+	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x9, [x9]
+	stur	x9, [x29, #-8]
+	adrp	x9, ___stack_chk_guard@GOTPAGE
+	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x9, [x9]
+	ldur	x10, [x29, #-8]
+	cmp	x9, x10
+	b.ne	LBB1_2
+; %bb.1:
+	ldp	x29, x30, [sp, #32]     ; 16-byte Folded Reload
+	add	sp, sp, #48             ; =48
+	ret
+LBB1_2:
+	bl	___stack_chk_fail
+	brk	#0x1
+	.cfi_endproc
+                                        ; -- End function
+	.globl	_int_array_prototype    ; -- Begin function int_array_prototype
+	.p2align	2
+_int_array_prototype:                   ; @int_array_prototype
+	.cfi_startproc
+; %bb.0:
+	sub	sp, sp, #32             ; =32
+	stp	x29, x30, [sp, #16]     ; 16-byte Folded Spill
+	add	x29, sp, #16            ; =16
+	.cfi_def_cfa w29, 16
+	.cfi_offset w30, -8
+	.cfi_offset w29, -16
+	adrp	x8, ___stack_chk_guard@GOTPAGE
+	ldr	x8, [x8, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x8, [x8]
+	adrp	x9, ___stack_chk_guard@GOTPAGE
+	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x9, [x9]
+	str	x9, [sp, #8]
+	adrp	x9, ___stack_chk_guard@GOTPAGE
+	ldr	x9, [x9, ___stack_chk_guard@GOTPAGEOFF]
+	ldr	x9, [x9]
+	ldr	x10, [sp, #8]
+	cmp	x9, x10
+	b.ne	LBB2_2
+; %bb.1:
+	ldp	x29, x30, [sp, #16]     ; 16-byte Folded Reload
+	add	sp, sp, #32             ; =32
+	ret
+LBB2_2:
+	bl	___stack_chk_fail
+	brk	#0x1
+	.cfi_endproc
+                                        ; -- End function
 	.section	__TEXT,__const
 	.p2align	2               ; @__const.basic_pointer.ndigist
 l___const.basic_pointer.ndigist:

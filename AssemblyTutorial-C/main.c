@@ -14,6 +14,11 @@
 2. Run:   Run
 */
 
+void one();
+void two();
+void three();
+void four(int i);
+
 void addOperator() 
 {
     int a = 10;
@@ -32,7 +37,24 @@ int main(int argc, const char * argv[]) {
     
     basic_pointer();
     
+    one();
+
     return 0;
 }
 
+// call stack
+void one() {
+    two();
+}
 
+void two() {
+    three();
+}
+
+void three() {
+    four(4);
+}
+
+void four(int i) {
+    printf("result = %d\n", i);
+}
