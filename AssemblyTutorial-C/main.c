@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include "operator.h"
+#include "pointer.h"
 
 void addOperator() 
 {
@@ -24,7 +25,9 @@ int main(int argc, const char * argv[]) {
     
     addOperator();
     greet();
-
+    
+    basic_pointer();
+    
     return 0;
 }
 
