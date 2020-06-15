@@ -64,14 +64,15 @@ clang -S -arch arm64 -isysroot `xcrun --sdk iphoneos --show-sdk-path` YOUR_SOURC
 --- 
 
 ## Instructions
+
 常用指令介绍
 
 |  指令     | 使用示例    | 说明 |
 |  --------   | --------  | ------- | 
 | **stp**  |  sub sp, sp, #32 <br> stp x29, x30, [sp, #16] | stp: Store Pair of Registers 把一对寄存器中的内容保存起来。<br>通常是保存到栈上或内存中，这里是把 FP LR 保存到sp 偏移16字节的位置上。<br> 这两句一般出现在函数的开头（*prologue*），用于开辟栈空间，保存现场，因为寄存器在CPU中只有一个，调用别的函数时也需要使用的。<br> 所以这一句是保存函数调用前的栈顶寄存器的值和该函数返回后下一个将要执行的指令地址值 <br> 所以先把相关寄存器的内容保存到栈内存中，当执行完毕后，从栈中 **ldp** 加载之前保存的内容到寄存器中，恢复现场（*epilogue*），**ret** 就是把 LR 内容赋值给 PC |
 |**adrp**|  adrp x0, l_.str@PAGE  <br> add x0, x0, l_.str@PAGEOFF <br> bl	_printf | 获取某个标签所在页的地址，这里的label 是 l_.str <br>@PAGE 表示该标签所在的页 <br> @PAGEOFF 表示该标签地址对应页地址的偏移<br>这样 add 之后 就可以获取某个标签具体的地址了 <br>（保存着字符串常量），把计算结果存入**x0 寄存器**，<br> 然后调用 printf 打印出来，因为 x0 保存的是函数调用的第一个参数。|
-| | |
-
+| **br** | nop <br> ldr x16, 0x1640 <br> br x16 | 函数调用指令（调整指令）这段指令一般用在 _stub 函数的开头，这里跳转指令不用 **blr**而用 **br**的原因是如果采用**blr**则将会再次形成一个调用栈的生成，这样在调试和断点时看到的将不是真实的函数调用，iOS系统中一个程序中的所有**_stub**函数的符号和实现分别存放在代码段__TEXT的**_stubs**和**_stub_helper**两个section中。
+| **b** |  | 函数调用指令 |
 
 > 1. 更多指令详解介绍，参照 arm64(armV8) [指令手册](media/DDI_0596_ARM_a64_instruction_set_architecture.pdf)，[armasm 用户指南](media/DUI0801I_armasm_user_guide.pdf)，方便查阅。 <br>
 > 2. armasm: The  ARM  Assembler  compiles  ARM  Assembly Language into
